@@ -33,3 +33,7 @@ tornado==6.5.1
 traitlets==5.14.3
 tzdata==2025.2
 wcwidth==0.2.13
+torch==2.2.2
+torchtext==0.17.2
+tqdm
+requests
