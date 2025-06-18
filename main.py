@@ -1,46 +1,92 @@
+import os
 import torch 
 import torch.nn as nn
 import torch.optim as optim
-from embeddings import ToyWordEmbeddings
-from data import queries, docs, triples
+from embeddings import ToyWordEmbeddings, PretrainedWordEmbeddings
+from data import queries, docs, triples, mini_real_queries_list, mini_real_passages_list
 
-all_words = set("".join(queries + docs).split())
+# create a set containing all words in both queries and docs 
+# join the sets of srings into a new string
+# the "" empty quotes contain the character to use to join
+# split the resulting long string accoring to .split()
+# when empty split() defaults to sep = whitespace
+# this is essentially our vocabulary
+all_words = set(" ".join(queries + docs).split())
+
+# sense check, print all words in vocab
 print(all_words)
+
+# sense check, print some items from set 
+for i, x in enumerate(all_words):
+    if i in (2,5,6):
+        print(x)
+
+# create dictionary using curly brackets
+# i is the index, w is the word 
+# this line creates a dictionary of words = numbers from all_words dataset 
+# after sorting alphabetically
 vocab = {w: i for i, w in enumerate(sorted(all_words))}
 
-emb_dim = 10 # must match TowerOne's input!
-embeddings = ToyWordEmbeddings(vocab, emb_dim)
+# toy embeddings: 
+# emb_dim = 10 # must match TowerOne's input!
+# embeddings = ToyWordEmbeddings(vocab, emb_dim)
+
+# Pretrained embeddings:
+emb_dim = 100
+embedding_path = "/Users/benjipro/MLX/MLX_two_towers/glove.6B.100d.word2vec.embeddings.txt"
+print ("File exists:", os.path.exists(embedding_path))
+embeddings = PretrainedWordEmbeddings(embedding_path, vocab)
+
 print(type(embeddings))
 
-
 class Query_Tower(torch.nn.Module):
+# nn.module is a fundamental class in PyTorch used to create custom neural network architectures.
 # Define a neural network class for the query encoder
+# this is a single-layer perceptron
+# toy version works with this because it is lineraly seperable
+
+#   def __init__(self):
+#        super().__init__()
+#        # a linear layer (fc) that maps a 10-dimensional input vector to a 1-dimensional output.
+#        self.fc = torch.nn.Linear(emb_dim,1)
 
     def __init__(self):
-        super().__init__()
-        # a linear layer (fc) that maps a 10-dimensional input vector to a 1-dimensional output.
-        self.fc = torch.nn.Linear(emb_dim,1)
+        super(Query_Tower, self).__init__()
+        self.fc = nn.Linear(emb_dim, 64)
+        self.out = nn.Linear(64, 32)
         
+#    def forward(self, x):
+#        # defines how input x is processed, simply passed through linear layer 
+#        x = self.fc(x)
+#        return x
+
     def forward(self, x):
-        # defines how input x is processed, simply passed through linear layer 
-        x = self.fc(x)
-        return x
+        
+        return self.out(torch.relu(self.fc(x)))
+
         
     
 class Doc_Tower(torch.nn.Module):
 # Define a neural network class for the doc encoder
 
+#    def __init__(self):
+#        super(Doc_Tower, self).__init__()
+#        # a linear layer (fc) that maps a 10-dimensional input vector to a 1-dimensional output.
+
+#        self.fc = torch.nn.Linear(10,1)
+
     def __init__(self):
-        super().__init__()
-        # a linear layer (fc) that maps a 10-dimensional input vector to a 1-dimensional output.
-
-        self.fc = torch.nn.Linear(10,1)
+        super(Doc_Tower, self).__init__()
+        self.fc = nn.Linear(emb_dim, 64)
+        self.out = nn.Linear(64, 32)
         
+#    def forward(self, x):
+#        # defines how input x is processed, simply passed through linear layer 
+#        x = self.fc(x)
+#        return x
     def forward(self, x):
-        # defines how input x is processed, simply passed through linear layer 
-        x = self.fc(x)
-        return x
-
+        
+        return self.out(torch.relu(self.fc(x)))
 
 # instantiates both models
 Query_Tower = Query_Tower()
@@ -48,9 +94,9 @@ Doc_Tower = Doc_Tower()
 
 
 # Creates dummy input vectors
-query_dummy = torch.randn(1, 10)
-doc_positive_dummy = torch.randn(1, 10)
-doc_negative_dummy = torch.randn(1, 10)
+query_dummy = torch.randn(1, 100)
+doc_positive_dummy = torch.randn(1, 100)
+doc_negative_dummy = torch.randn(1, 100)
 
 # Passes the vectors through the respective towers
 Query = Query_Tower(query_dummy)
@@ -81,7 +127,7 @@ print(distance_positive)
 
 # TRAINING LOOP 
 
-optimizer = optim.Adam(list(embeddings.emb.parameters()) +
+optimizer = optim.Adam(list(embeddings.embeddings.parameters()) +
                       list(Query_Tower.parameters()) +
                       list(Doc_Tower.parameters()), lr=0.01)
 

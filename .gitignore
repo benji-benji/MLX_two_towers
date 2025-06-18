@@ -94,3 +94,5 @@ target/
 
 exclude data from source control by default
 data/
+train-00000-of-00001.parquet
+glove.6B.100d.word2vec.embeddings.txt

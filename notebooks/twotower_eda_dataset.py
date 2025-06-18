@@ -94,8 +94,8 @@ print(passage_query_df.head(20))
 
 
 
-passage_query_df = ........
+#passage_query_df = ........
 
-print(passage_query_df.shape)
-print(passage_query_df.head())
-print(passage_query_df.columns)
+#print(passage_query_df.shape)
+#print(passage_query_df.head())
+#print(passage_query_df.columns)
