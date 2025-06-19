@@ -2,8 +2,9 @@ import os
 import torch 
 import torch.nn as nn
 import torch.optim as optim
-from embeddings import ToyWordEmbeddings, PretrainedWordEmbeddings
-from data import queries, docs, triples, mini_real_queries_list, mini_real_passages_list
+from embeddings import PretrainedWordEmbeddings
+from data import mini_real_queries_list, mini_real_passages_list, triples_real, mini_sample_df
+import random 
 
 # create a set containing all words in both queries and docs 
 # join the sets of srings into a new string
@@ -11,7 +12,7 @@ from data import queries, docs, triples, mini_real_queries_list, mini_real_passa
 # split the resulting long string accoring to .split()
 # when empty split() defaults to sep = whitespace
 # this is essentially our vocabulary
-all_words = set(" ".join(queries + docs).split())
+all_words = set(" ".join(mini_real_queries_list + mini_real_passages_list).split())
 
 # sense check, print all words in vocab
 print(all_words)
@@ -131,12 +132,12 @@ optimizer = optim.Adam(list(embeddings.embeddings.parameters()) +
                       list(Query_Tower.parameters()) +
                       list(Doc_Tower.parameters()), lr=0.01)
 
-for epoch in range(15):
+for epoch in range(10):
     total_loss = 0
-    for (q_idx, d_pos_idx, d_neg_idx) in triples:
-        q_vec = embeddings.encode(queries[q_idx])
-        d_pos_vec = embeddings.encode(docs[d_pos_idx])
-        d_neg_vec = embeddings.encode(docs[d_neg_idx])
+    for (q_idx, d_pos_idx, d_neg_idx) in triples_real:
+        q_vec = embeddings.encode(mini_real_queries_list[q_idx])
+        d_pos_vec = embeddings.encode(mini_real_passages_list[d_pos_idx])
+        d_neg_vec = embeddings.encode(mini_real_passages_list[d_neg_idx])
 
         # expand dims to shape (1, emb_dim) as in example
         d_pos_vec = d_pos_vec.unsqueeze(0)
@@ -158,22 +159,42 @@ for epoch in range(15):
         optimizer.step()
 
         total_loss += loss.item()
-    print(f"Epoch {epoch} loss: {total_loss/len(triples):.4f}")
+    print(f"Epoch {epoch} loss: {total_loss/len(triples_real):.4f}")
     
     
 def retrieve(query):
     q_vec = embeddings.encode(query).unsqueeze(0)
     out_query = Doc_Tower(q_vec)
     scores = []
-    for doc in docs:
+    for doc in mini_real_passages_list:
         d_vec = embeddings.encode(doc).unsqueeze(0)
         out_doc = Doc_Tower(d_vec)
         sim = nn.functional.cosine_similarity(out_query, out_doc)
         scores.append(sim.item())
     return scores
 
-for i, q in enumerate(queries):
-    sims = retrieve(q)
-    print(f"\nQuery: {q}")
-    for j, s in enumerate(sims):
-        print(f"  Doc {j}: Score: {s:.3f}")    
+random_indices = random.sample(range(len(mini_sample_df)), 3)
+
+for idx in random_indices:
+    query = mini_sample_df.iloc[idx]['query_str']
+    correct_doc = mini_sample_df.iloc[idx]['passage_text']
+    sims = retrieve(query)  # sims: list of scores, one per doc
+
+    # Get top 3 docs by score
+    top3 = sorted(enumerate(sims), key=lambda x: x[1], reverse=True)[:3]
+    # Get 3 random doc indices (excluding the correct one)
+    all_doc_indices = list(range(len(sims)))
+    all_doc_indices.remove(idx)
+    random_doc_indices = random.sample(all_doc_indices, 3)
+
+    print(f"\nQuery: {query}")
+    print(f"Correct doc: {correct_doc}")
+    print(f"Score for correct doc: {sims[idx]:.3f}")
+
+    print("\nTop 3 docs:")
+    for doc_idx, score in top3:
+        print(f"  Doc {doc_idx}: Score: {score:.3f}")
+
+    print("\nRandom 3 docs:")
+    for doc_idx in random_doc_indices:
+        print(f"  Doc {doc_idx}: Score: {sims[doc_idx]:.3f}")   

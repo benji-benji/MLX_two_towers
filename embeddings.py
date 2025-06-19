@@ -69,7 +69,7 @@ class PretrainedWordEmbeddings:
             if word in embeddings_index:
                 emb_matrix[idx] = embeddings_index[word]
             else: 
-                emb_matrix[idx] = torch.rand(embedding_dim) * 0.01
+                emb_matrix[idx] = torch.rand(self.emb_dim) * 0.01
                 
             
             # Random vectors are sampled from normal distribution with standard deviation 0.6

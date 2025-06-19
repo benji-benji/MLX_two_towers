@@ -1,5 +1,6 @@
 
 import pandas as pd
+import random
 # DUMMY DATA
 
 queries = [
@@ -60,7 +61,7 @@ print(type(passage_query_df))
 print(passage_query_df.shape)
 print(passage_query_df.columns)
 
-mini_sample_df = passage_query_df.sample(n=10, random_state=42)
+mini_sample_df = passage_query_df.sample(n=5000, random_state=42)
 
 mini_real_queries_list = mini_sample_df['query_str'].tolist()
 mini_real_passages_list = mini_sample_df['passage_text'].tolist()
@@ -77,3 +78,28 @@ print("3 corresponding docs:\n")
 for i, x in enumerate(mini_real_passages_list):
     if i in (2,5,6):
         print(x)
+        
+
+def generate_triples(df):
+    triples = []
+    n = len(df)
+    all_indicies = set(range(n))
+    
+    for position in range(n):
+        query_idx =position
+        # Positive = current row's doc
+        pos_doc_idx =position
+        # Negative = random doc NOT associated with this query
+        neg_candidates = all_indicies - {position}
+        neg_doc_idx = random.choice(list(neg_candidates))
+        triples.append((query_idx, pos_doc_idx, neg_doc_idx))
+   
+    return triples    
+    
+triples_real = generate_triples(mini_sample_df)
+
+print(type(triples_real))
+    
+print(f"Generated {len(triples_real)} triples")
+assert len(triples_real) == len(mini_sample_df)
+    
