@@ -42,15 +42,15 @@ class Doc_Tower(torch.nn.Module):
         return out_layer3
 
 class Towers(torch.nn.Module):
-    def __init__(self, emb):
+    def __init__(self, glove_dim):
         super().__init__()
-        self.query_tower = Query_Tower(emb)
-        self.doc_tower = Doc_Tower(emb)
+        self.query_tower = Query_Tower(glove_dim)
+        self.doc_tower = Doc_Tower(glove_dim)
 
     def forward(self, query, posdoc, negdoc, mrg):
         query_vector = self.query_tower(query)
-        posdoc_vector = self.doc(posdoc)
-        negdoc_vector = self.doc(negdoc)
+        posdoc_vector = self.doc_tower(posdoc)
+        negdoc_vector = self.doc_tower(negdoc)
         positive_similarity = 1 - nn.functional.cosine_similarity(query_vector, posdoc_vector)
         negative_similarity = 1 - nn.functional.cosine_similarity(query_vector, negdoc_vector)
         return torch.max(positive_similarity - negative_similarity + mrg, torch.tensor(0.0)).mean()
@@ -69,22 +69,5 @@ class Towers(torch.nn.Module):
 
 
 
-
-
-
-
-
-
-
-class Doc_Tower(torch.nn.Module):
-
-    def __init__(self, glove_dim):
-        super()).__init__()
-        self.fc = nn.Linear(emb_dim, 64)
-        self.out = nn.Linear(64, 32)
-        
-    def forward(self, x):
-        
-        return self.out(torch.relu(self.fc(x)))
 
 

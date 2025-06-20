@@ -80,8 +80,14 @@ def build_vocab(texts, glove_path):
     
     vocab = special_tokens + [word for word in glove_words if word in word_counts]
     word_to_idx = {word: idx for idx, word in enumerate(vocab)}
-    return vocab, word_to_idx
+    return vocab # , word_to_idx
 
-vocab, word_to_idx = build_vocab(texts, glove_path='/Users/benjipro/MLX/MLX_two_towers/glove_embeddings/glove.6B.100d.word2vec.embeddings.txt')
+#vocab, word_to_idx = build_vocab(texts, glove_path='/Users/benjipro/MLX/MLX_two_towers/glove_embeddings/glove.6B.100d.word2vec.embeddings.txt')
 
-print("VOCAB:", len(word_to_idx))
+full_vocab = build_vocab(texts, glove_path="/Users/aparna/Documents/CollabWeek2/MLX_two_towers/corpus/glove.6B.100d.txt")
+words_to_idx, ids_to_words = create_lookup_tables(full_vocab)
+tokenizer = { "words_to_idx": words_to_idx, "ids_to_words": ids_to_words }
+tokens: list[int] = [words_to_idx[word] for word in full_vocab]
+with open('./corpus/tokens.txt', 'w', encoding='utf-8') as f: f.write('\n'.join(map(str, tokens)))
+with open('./corpus/tokeniser.pkl', 'wb') as f: pickle.dump(tokenizer, f)
+

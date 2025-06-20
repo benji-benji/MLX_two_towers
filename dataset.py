@@ -14,7 +14,7 @@ class Triplets(Dataset):
     self.q_keys = list(self.qrys.keys())
     self.d_keys = list(self.docs.keys())
     with open('./corpus/tokeniser.pkl', 'rb') as f: tkns = pickle.load(f)
-    self.words_to_ids = tkns['words_to_ids']
+    self.words_to_idx = tkns['words_to_idx']
 
   def __len__(self):
     return len(self.qrys)
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     # Dummy tokeniser mapping
     dummy_tokeniser = {str(i): i for i in range(vocab_size)}
     with open('./corpus/tokeniser.pkl', 'wb') as f:
-        pickle.dump({"words_to_ids": dummy_tokeniser}, f)
+        pickle.dump({"words_to_idx": dummy_tokeniser}, f)
 
     # Now try to instantiate the dataset
     try:

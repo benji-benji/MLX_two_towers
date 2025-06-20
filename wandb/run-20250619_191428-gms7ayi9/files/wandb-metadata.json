@@ -1,0 +1,35 @@
+{
+  "os":  "macOS-15.4.1-x86_64-i386-64bit",
+  "python":  "CPython 3.12.10",
+  "startedAt":  "2025-06-19T18:14:28.925470Z",
+  "program":  "/Users/aparna/Documents/CollabWeek2/MLX_two_towers/05_train_tt.py",
+  "codePath":  "05_train_tt.py",
+  "git":  {
+    "remote":  "https://github.com/benji-benji/MLX_two_towers.git",
+    "commit":  "9c5b7572806d3d0485136bdca6b9396e34129d5b"
+  },
+  "email":  "aparna.pillai2000@gmail.com",
+  "root":  "/Users/aparna/Documents/CollabWeek2/MLX_two_towers",
+  "host":  "Aparnas-MacBook-Pro.local",
+  "executable":  "/Users/aparna/Documents/CollabWeek2/MLX_two_towers/.venv/bin/python3",
+  "codePathLocal":  "05_train_tt.py",
+  "cpu_count":  4,
+  "cpu_count_logical":  8,
+  "disk":  {
+    "/":  {
+      "total":  "499963174912",
+      "used":  "148059664384"
+    },
+    "/System/Volumes/Data":  {
+      "total":  "499963174912",
+      "used":  "148059664384"
+    }
+  },
+  "memory":  {
+    "total":  "17179869184"
+  },
+  "cpu":  {
+    "count":  4,
+    "countLogical":  8
+  }
+}
