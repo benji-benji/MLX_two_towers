@@ -14,7 +14,7 @@ class Triplets(Dataset):
     self.q_keys = list(self.qrys.keys())
     self.d_keys = list(self.docs.keys())
     with open('./corpus/tokeniser.pkl', 'rb') as f: tkns = pickle.load(f)
-    self.words_to_ids = tkns['words_to_ids']
+    self.words_to_ids = tkns['words_to_idx']
 
   def __len__(self):
     return len(self.qrys)
