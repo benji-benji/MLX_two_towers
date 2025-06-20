@@ -3,7 +3,7 @@ import requests
 import os
 
 
-full_dataset = datasets.load_dataset('microsoft/ms_marco','v1.1')
+full_dataset = datasets.load_dataset('microsoft/ms_marco','v1.1', split = 'train')
 
 all_docs = [passage for s in full_dataset.keys() for e in full_dataset[s] for passage in e['passages']['passage_text']]
 all_qrs = [e['query'] for s in full_dataset.keys()for e in full_dataset[s]]
