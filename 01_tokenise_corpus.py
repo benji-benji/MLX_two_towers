@@ -77,7 +77,7 @@ def build_vocab(texts, glove_path):
     for text in texts:
         tokens = preprocess(text)
         word_counts.update(tokens)
-    
+
     vocab = special_tokens + [word for word in glove_words if word in word_counts]
     word_to_idx = {word: idx for idx, word in enumerate(vocab)}
     return vocab # , word_to_idx

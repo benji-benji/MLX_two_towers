@@ -13,7 +13,7 @@ EMBED_DIM = 100
 Batchsize = 256
 Margin = 0.3
 lr = 0.003
-Epochs = 3
+Epochs = 50
 
 wandb.init(project='mlx6-week-02-two',
            config={
