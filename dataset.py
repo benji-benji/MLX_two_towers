@@ -63,13 +63,13 @@ if __name__ == "__main__":
     
     # Dummy embeddings for testing — use your real model in practice
     vocab_size = 10000
-    embedding_dim = 128
+    embedding_dim = 100
     dummy_emb_layer = nn.Embedding(vocab_size, embedding_dim).to('cpu')
 
     # Dummy tokeniser mapping
     dummy_tokeniser = {str(i): i for i in range(vocab_size)}
     with open('./corpus/tokeniser.pkl', 'wb') as f:
-        pickle.dump({"words_to_ids": dummy_tokeniser}, f)
+        pickle.dump({"words_to_idx": dummy_tokeniser}, f)
 
     # Now try to instantiate the dataset
     try:

@@ -21,15 +21,24 @@ embeddings = load_glove(glove_path, words_to_idx, embedding_dim=EMBED_DIM)
 embedding_layer = nn.Embedding.from_pretrained(embeddings, freeze=True)
 
 ds = dataset.Triplets(embedding_layer, words_to_idx)
+print("Number of triplets:", len(ds))
 dl = torch.utils.data.DataLoader(ds, batch_size=256, shuffle=True)
 
 two = models.Towers(glove_dim=EMBED_DIM).to(dev)
 torch.save(two.state_dict(), f'./checkpoints/{ts}.0.0.two.pth')
 print('two:', sum(p.numel() for p in two.parameters())) # 66,048
 opt = torch.optim.Adam(two.parameters(), lr=0.003)
-wandb.init(project='mlx6-week-02-two')
 
-for epoch in range(1):
+wandb.init(project='mlx6-week-02-two',
+           config={
+             "num_epochs": 1,
+             "batch_size": 256,
+             "learning_rate": 0.003,
+             "margin": 0.3,
+             "embedding_dim": 100,
+           })
+
+for epoch in range(3):
   prgs = tqdm.tqdm(dl, desc=f"Epoch {epoch + 1}", leave=False)
   for idx, (qry, pos, neg) in enumerate(prgs):
     qry, pos, neg = qry.to(dev), pos.to(dev), neg.to(dev)
