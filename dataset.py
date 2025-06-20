@@ -3,8 +3,6 @@ import random
 import pickle
 from torch.utils.data import Dataset
 
-
-
 class Triplets(Dataset):
   def __init__(self, embs, tkns):
     self.embs = embs

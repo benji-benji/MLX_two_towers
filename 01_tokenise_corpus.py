@@ -1,7 +1,6 @@
 import pickle
 import collections 
 from collections import Counter
-import os
 
 with open('./corpus/text8.txt') as f: text8: str =f.read()
 with open('./corpus/msmarco.txt') as f: msmarco: str =f.read()
@@ -74,12 +73,13 @@ def build_vocab(texts, glove_path):
     
     # Create vocab with special tokens + GloVe words found in corpus
     word_counts = Counter()
+    
     for text in texts:
         tokens = preprocess(text)
         word_counts.update(tokens)
     
     vocab = special_tokens + [word for word in glove_words if word in word_counts]
-    word_to_idx = {word: idx for idx, word in enumerate(vocab)}
+    # words_to_idx = {word: idx for idx, word in enumerate(vocab)}
     return vocab # , word_to_idx
 
 #vocab, word_to_idx = build_vocab(texts, glove_path='/Users/benjipro/MLX/MLX_two_towers/glove_embeddings/glove.6B.100d.word2vec.embeddings.txt')

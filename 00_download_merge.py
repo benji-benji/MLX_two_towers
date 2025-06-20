@@ -25,6 +25,9 @@ with open('./corpus/msmarco.txt', 'w', encoding='utf-8') as f: f.write('\n'.join
 r = requests.get('https://huggingface.co/datasets/ardMLX/text8/resolve/main/text8')
 with open('./corpus/text8.txt', 'wb') as f: f.write(r.content)
 
+r = requests.get('https://huggingface.co/datasets/nodozi/glove.6B.100d.word2vec.txt/resolve/main/glove.6B.100d.word2vec.txt?download=true')
+with open('./glove_embeddings/glove_embeddings_6B_100d_w2v.txt', 'wb') as f: f.write(r.content)
+
 # CHECK FILES EXIST
 print("\nChecking files saved...\n")  
 msmarco_path = "/Users/benjipro/MLX/MLX_two_towers/corpus/msmarco.txt"

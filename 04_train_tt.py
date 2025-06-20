@@ -8,8 +8,6 @@ import tqdm
 from load_glove import load_glove
 import torch.nn as nn 
 
-
-
 torch.manual_seed(42)
 ts = datetime.datetime.now().strftime('%Y_%m_%d__%H_%M_%S')
 
@@ -42,8 +40,5 @@ for epoch in range(1):
     wandb.log({'loss': loss.item()})
     if idx % 50 == 0: torch.save(two.state_dict(), f'./checkpoints/{ts}.{epoch}.{idx}.two.pth')
 
-
-#
-#
 #
 wandb.finish()
