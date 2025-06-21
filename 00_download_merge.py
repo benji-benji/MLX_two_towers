@@ -11,6 +11,11 @@ complete_qrs = [e['query'] for s in full_dataset.keys()for e in full_dataset[s]]
 eval_qrs = random.sample(complete_qrs, 50)
 all_qrs = [q for q in complete_qrs if q not in eval_qrs]
 
+print(len(all_qrs))
+print(len(complete_qrs))
+print(len(eval_qrs))
+if (len(eval_qrs)+len(all_qrs))==len(complete_qrs):
+    print("smashed it!")
 
 # SENSE CHECK PRINTOUTS 
 

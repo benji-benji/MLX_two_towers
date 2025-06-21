@@ -64,17 +64,12 @@ for s in ds.keys():
             dct[q_id]['docs'].append(hsh)
 
 
-
-
 print("len(qrys)", len(qrys))
 print("len(docs)", len(docs))
 print(list(docs.keys())[:10])
 print(list(qrys.keys())[:10])
 
 
-#
-#
-#
 print(docs['fdb37125d43984c2'])
 print(random.choice(list(docs.values())))
 print(qrys[9655])
