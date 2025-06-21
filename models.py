@@ -46,6 +46,12 @@ class Towers(torch.nn.Module):
         super().__init__()
         self.query_tower = Query_Tower(glove_dim)
         self.doc_tower = Doc_Tower(glove_dim)
+        
+    def qry(self, x):
+        return self.query_tower(x)
+
+    def doc(self, x):
+        return self.doc_tower(x)
 
     def forward(self, query, posdoc, negdoc, mrg):
         query_vector = self.query_tower(query)

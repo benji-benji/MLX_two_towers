@@ -11,10 +11,10 @@ import torch.nn as nn
 # HYPERPRAMETERS
 
 #total_data_size =
-num_epochs = 5
+num_epochs = 20
 batch_size = 256
-learning_rate = 0.003
-loss_margin = 0.3
+learning_rate = 0.002
+loss_margin = 0.7
 embedding_dim = 100
 
 torch.manual_seed(42)
@@ -24,7 +24,7 @@ with open('./corpus/tokeniser.pkl', 'rb') as f: tkns = pickle.load(f)
 words_to_idx, ids_to_words = tkns['words_to_idx'], tkns['ids_to_words']
 dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-glove_path = '/Users/benjipro/MLX/MLX_two_towers/glove_embeddings/glove.6B.100d.word2vec.embeddings.txt'
+glove_path = '/Users/benjipro/MLX/MLX_two_towers/glove_embeddings/glove_embeddings_6B_100d_w2v.txt'
 embeddings = load_glove(glove_path, words_to_idx, embedding_dim=embedding_dim)
 embedding_layer = nn.Embedding.from_pretrained(embeddings, freeze=True)
 

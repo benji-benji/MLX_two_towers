@@ -1,12 +1,24 @@
 import datasets 
 import requests 
 import os
+from datasets import get_dataset_config_names, get_dataset_split_names
+import random
 
-
-full_dataset = datasets.load_dataset('microsoft/ms_marco','v1.1', split = 'train')
+#print(get_dataset_config_names("microsoft/ms_marco"))
+#print(get_dataset_split_names("microsoft/ms_marco", "triplet"))
+random.seed (42)
+full_dataset = datasets.load_dataset('microsoft/ms_marco','v1.1')
 
 all_docs = [passage for s in full_dataset.keys() for e in full_dataset[s] for passage in e['passages']['passage_text']]
-all_qrs = [e['query'] for s in full_dataset.keys()for e in full_dataset[s]]
+
+complete_qrs = [e['query'] for s in full_dataset.keys()for e in full_dataset[s]]
+eval_qrys = random.sample(complete_qrs, 50)
+all_qrs = [e['query'] for s in full_dataset.keys() for e in full_dataset[s] if e['query'] not in eval_qrys]
+#all_qrs = complete_qrs - eval_qrys
+
+print("all_qrs length:", len(all_qrs))
+print("eval_qrys length:", len(eval_qrys))
+print("Difference between all_qrs and eval_qrys:", len(all_qrs) - len(eval_qrys))
 
 # SENSE CHECK PRINTOUTS 
 
@@ -34,3 +46,4 @@ msmarco_path = "/Users/benjipro/MLX/MLX_two_towers/corpus/msmarco.txt"
 text8_path = "/Users/benjipro/MLX/MLX_two_towers/corpus/text8.txt"
 print ("msmarco.txt file exists:", os.path.exists(msmarco_path))
 print ("text8.txt file exists:", os.path.exists(text8_path))
+
