@@ -10,10 +10,10 @@ from load_glove import load_glove
 
 #Hyperparameters
 EMBED_DIM = 100 
-Batchsize = 256
-Margin = 0.3
-lr = 0.003
-Epochs = 50
+Batchsize = 32
+Margin = 0.1
+lr = 0.001
+Epochs = 10
 
 wandb.init(project='mlx6-week-02-two',
            config={
@@ -44,7 +44,7 @@ ts = datetime.datetime.now().strftime('%Y_%m_%d__%H_%M_%S')
 two = models.Towers(glove_dim=EMBED_DIM).to(dev)
 torch.save(two.state_dict(), f'./checkpoints/{ts}.0.0.two.pth')
 print('two:', sum(p.numel() for p in two.parameters()))
-opt = torch.optim.Adam(two.parameters(), lr=ProcessLookupError)
+opt = torch.optim.Adam(two.parameters(), lr=lr)
 
 for epoch in range(Epochs):
     prgs = tqdm.tqdm(dl, desc=f"Epoch {epoch + 1}", leave=False)
@@ -58,6 +58,9 @@ for epoch in range(Epochs):
         if idx % 50 == 0:
             torch.save(two.state_dict(), f'./checkpoints/{ts}.{epoch}.{idx}.two.pth')
 
+torch.save(two.state_dict(), f'./checkpoints/final.two.pth')
+
 wandb.finish()
+
 
 
